@@ -11,10 +11,15 @@ interface ProductProps {
         imageUrl: string;
         price: string;
         description: string;
+        defaultPriceId: string;
     }
 }
 
 export default function Product({ product }: ProductProps) {
+    function handleBuyProduct() {
+        console.log(product.defaultPriceId)
+    }
+
     return (
         <ProductContainer>
             <ImageContainer>
@@ -26,14 +31,14 @@ export default function Product({ product }: ProductProps) {
                 <span>{product.price}</span>
                 <p>{product.description}</p>
 
-                <button>Comprar agora</button>
+                <button onClick={handleBuyProduct}>Comprar agora</button>
             </ProductDetails>
         </ProductContainer>
     )
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    return{
+    return {
         paths: [
             { params: { id: 'prod_N2BJWmlKSORYi3' } }
         ],
@@ -59,8 +64,9 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ para
                 price: new Intl.NumberFormat('pr-BR', {
                     style: 'currency',
                     currency: 'BRL',
-                  }).format(price.unit_amount! / 100),
+                }).format(price.unit_amount! / 100),
                 description: product.description,
+                defaultPriceId: price.id,
             }
         },
         revalidate: 60 * 60 * 1, //1h
